@@ -9,6 +9,8 @@ public class CameraController : MonoBehaviour
     private Vector3 startPosition = new Vector3(0, 1, 0); // Начальная позиция камеры
     private Vector3 targetPosition = new Vector3(0, 10, 0); // Целевая позиция камеры
     private PlaneController planeController; // Ссылка на скрипт управления самолетом
+    [SerializeField] private GameObject[] _gameObjectsToTurnOn;
+    [SerializeField] private GameObject _tutorial;
 
     void Start()
     {
@@ -25,6 +27,10 @@ public class CameraController : MonoBehaviour
     public void StartGame()
     {
         enterPanel.SetActive(false);
+        foreach (var item in _gameObjectsToTurnOn)
+        {
+            item.SetActive(true);
+        }
         StartCoroutine(MoveCamera());
     }
 
@@ -47,5 +53,8 @@ public class CameraController : MonoBehaviour
         {
             planeController.enabled = true;
         }
+        _tutorial.SetActive(true);
+        yield return new WaitForSeconds(2.0f);
+        _tutorial.SetActive(false);
     }
 }
