@@ -84,7 +84,7 @@ public class TrailDrawer : MonoBehaviour
                     {
                         _isGameFinished = true;
                         float shapeProgress = validator.GetProgress();
-                        if (shapeProgress >= 80)
+                        if (shapeProgress >= 90)
                         {
                             _customWindowManager.ShowVictoryPopup();
                         }

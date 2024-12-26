@@ -31,9 +31,16 @@ public class CustomWindowManager : MonoBehaviour
     {
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         currentLevel++;
-        if (currentLevel > 10)
+
+        int bestLevel = PlayerPrefs.GetInt("BestLevel", 1);
+        if (currentLevel > bestLevel)
         {
-            currentLevel = 10;
+            bestLevel = currentLevel;
+            PlayerPrefs.SetInt("BestLevel", bestLevel);
+        }
+        if (currentLevel > 20)
+        {
+            currentLevel = 20;
             nextBtn.SetActive(false);
         }
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
