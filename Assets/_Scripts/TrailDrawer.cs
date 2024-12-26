@@ -18,9 +18,13 @@ public class TrailDrawer : MonoBehaviour
 
     private SpriteShapeValidator validator;
     private bool _isGameFinished;
+    [SerializeField] private CustomWindowManager _customWindowManager;
+    [SerializeField] private GameObject[] _levels;
 
     void Start()
     {
+        int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        _levels[currentLevel - 1].SetActive(true);
         _isGameFinished = false;
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 0;
@@ -82,11 +86,11 @@ public class TrailDrawer : MonoBehaviour
                         float shapeProgress = validator.GetProgress();
                         if (shapeProgress >= 80)
                         {
-                            Debug.Log("Win");
+                            _customWindowManager.ShowVictoryPopup();
                         }
                         else
                         {
-                            Debug.Log("Lose");
+                            _customWindowManager.ShowDefeatPopup();
                         }
                     }
                     
