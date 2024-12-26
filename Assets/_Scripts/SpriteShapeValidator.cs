@@ -5,27 +5,31 @@ public class SpriteShapeValidator : MonoBehaviour
     private SpriteRenderer shapeSpriteRenderer;
     private Texture2D shapeTexture;
 
-    private int totalShapePoints; // Всего точек на форме
-    private int coveredPoints; // Покрытые игроком точки
+    public SpriteRenderer ShapeSpriteRenderer => shapeSpriteRenderer;
+    public Texture2D ShapeTexture => shapeTexture;
 
+
+    private int totalShapePoints; // Всего точек на форме
     private bool[,] coverageMap; // Карта покрытия формы
 
-    void Start()
+    private int coveredPoints = 0; // Количество покрытых точек
+
+    [SerializeField] private float inkNeeded;
+
+    void Awake()
     {
         shapeSpriteRenderer = GetComponent<SpriteRenderer>();
 
         if (shapeSpriteRenderer.sprite != null)
         {
-            // Создаем копию текстуры для изменений
+            // Создаем копию текстуры для работы
             shapeTexture = Instantiate(shapeSpriteRenderer.sprite.texture);
-
-            // Считаем общее количество точек на форме
-            totalShapePoints = CountShapePixels();
-            coveredPoints = 0;
 
             // Инициализируем карту покрытия
             coverageMap = new bool[shapeTexture.width, shapeTexture.height];
 
+            // Подсчитываем общее количество непрозрачных пикселей
+            totalShapePoints = CountShapePixels();
             Debug.Log($"[DEBUG] Всего точек на форме: {totalShapePoints}");
         }
         else
@@ -34,13 +38,17 @@ public class SpriteShapeValidator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Считает количество непрозрачных пикселей на текстуре формы.
+    /// </summary>
     private int CountShapePixels()
     {
         int count = 0;
+        int step = 1; // Шаг итерации (для оптимизации можно увеличить)
 
-        for (int x = 0; x < shapeTexture.width; x++)
+        for (int x = 0; x < shapeTexture.width; x += step)
         {
-            for (int y = 0; y < shapeTexture.height; y++)
+            for (int y = 0; y < shapeTexture.height; y += step)
             {
                 if (IsPixelOpaque(x, y))
                 {
@@ -52,17 +60,23 @@ public class SpriteShapeValidator : MonoBehaviour
         return count;
     }
 
+    /// <summary>
+    /// Проверяет, является ли пиксель непрозрачным.
+    /// </summary>
     private bool IsPixelOpaque(int x, int y)
     {
         Color pixelColor = shapeTexture.GetPixel(x, y);
-        return pixelColor.a > 0.5f; // Учитываем только непрозрачные пиксели
+        return pixelColor.a > 0.5f; // Считаем пиксель непрозрачным, если его прозрачность больше 0.5
     }
 
+    /// <summary>
+    /// Регистрирует попадание точки линии на форму.
+    /// </summary>
     public void RegisterPoint(Vector3 worldPosition, float lineThickness)
     {
         if (shapeTexture == null) return;
 
-        // Переводим мировые координаты в текстурные
+        // Переводим мировые координаты в координаты текстуры
         Vector2 localPosition = shapeSpriteRenderer.transform.InverseTransformPoint(worldPosition);
 
         Vector2 spritePosition = new Vector2(
@@ -76,7 +90,7 @@ public class SpriteShapeValidator : MonoBehaviour
         if (textureX < 0 || textureY < 0 || textureX >= shapeTexture.width || textureY >= shapeTexture.height)
             return;
 
-        // Рассчитываем радиус проверки (толщина линии в пикселях)
+        // Учитываем радиус проверки (толщина линии в пикселях)
         int thicknessRadius = Mathf.CeilToInt(lineThickness * shapeTexture.width / shapeSpriteRenderer.sprite.bounds.size.x);
 
         // Проверяем все точки в радиусе толщины линии
@@ -93,7 +107,6 @@ public class SpriteShapeValidator : MonoBehaviour
                     {
                         coverageMap[checkX, checkY] = true;
                         coveredPoints++;
-
                         Debug.Log($"[DEBUG] Покрытая точка: ({checkX}, {checkY}). Покрыто: {coveredPoints}/{totalShapePoints} ({GetProgress():F1}%)");
                     }
                 }
@@ -101,13 +114,18 @@ public class SpriteShapeValidator : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Рассчитывает процент покрытия формы.
+    /// </summary>
     public float GetProgress()
     {
         if (totalShapePoints == 0) return 0;
         return (float)coveredPoints / totalShapePoints * 100f;
     }
 
+    /// <summary>
+    /// Проверяет, находится ли самолет на форме.
+    /// </summary>
     public bool IsPointOnShape(Vector3 worldPosition, float lineThickness)
     {
         if (shapeTexture == null) return false;
@@ -126,7 +144,7 @@ public class SpriteShapeValidator : MonoBehaviour
         if (textureX < 0 || textureY < 0 || textureX >= shapeTexture.width || textureY >= shapeTexture.height)
             return false;
 
-        // Учитываем толщину линии
+        // Учитываем радиус проверки (толщина линии в пикселях)
         int thicknessRadius = Mathf.CeilToInt(lineThickness * shapeTexture.width / shapeSpriteRenderer.sprite.bounds.size.x);
 
         // Проверяем все точки в радиусе толщины линии
@@ -149,5 +167,26 @@ public class SpriteShapeValidator : MonoBehaviour
 
         return false; // Ни одна точка не попала на форму
     }
+
+    /// <summary>
+    /// Рассчитывает необходимое количество чернил для покрытия формы.
+    /// </summary>
+    public float CalculateInkNeeded()
+    {
+
+
+        return inkNeeded;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 }
