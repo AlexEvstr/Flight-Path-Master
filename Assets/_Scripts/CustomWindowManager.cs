@@ -14,17 +14,16 @@ public class CustomWindowManager : MonoBehaviour
     [Header("Animation Settings")]
     public float popupAnimationDuration = 0.3f;
 
-    //private CustomAudioManager customAudioManager;
-    //private CustomAchievementController customAchievementController;
+    private AudioGame _audioGame;
+
 
     private void Start()
     {
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         _levelText.text = "Level: " + currentLevel.ToString();
-        //customAudioManager = GetComponent<CustomAudioManager>();
+        _audioGame = GetComponent<AudioGame>();
 
 
-        //StartCoroutine(HideTutorialPopup(tutorialPopup));
     }
 
     public void ShowVictoryPopup()
@@ -50,7 +49,7 @@ public class CustomWindowManager : MonoBehaviour
     private IEnumerator AnimateAndShowVictoryPopup()
     {
         yield return StartCoroutine(AnimatePopupOpen(victoryPopup));
-        //customAudioManager?.PlayVictorySound();
+        _audioGame?.WinSound();
     }
 
     public void ShowDefeatPopup()
@@ -61,7 +60,7 @@ public class CustomWindowManager : MonoBehaviour
     private IEnumerator AnimateAndShowDefeatPopup()
     {
         yield return StartCoroutine(AnimatePopupOpen(defeatPopup));
-        //customAudioManager?.PlayDefeatSound();
+        _audioGame?.LoseSound();
     }
 
     private IEnumerator AnimatePopupOpen(GameObject popup)
@@ -80,24 +79,5 @@ public class CustomWindowManager : MonoBehaviour
         }
 
         popupChild.localScale = Vector3.one;
-    }
-
-    private IEnumerator HideTutorialPopup(GameObject popup)
-    {
-        yield return new WaitForSeconds(2.0f);
-
-        Transform popupChild = popup.transform;
-        float timer = popupAnimationDuration;
-
-        while (timer > 0f)
-        {
-            timer -= Time.deltaTime;
-            float scale = Mathf.Clamp01(timer / popupAnimationDuration);
-            popupChild.localScale = new Vector3(scale, scale, scale);
-            yield return null;
-        }
-
-        popupChild.localScale = Vector3.zero;
-        popup.SetActive(false);
     }
 }
