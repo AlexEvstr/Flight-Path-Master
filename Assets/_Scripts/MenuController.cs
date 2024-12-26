@@ -5,8 +5,25 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
     [SerializeField] private GameObject _levels;
+    [SerializeField] private SpriteRenderer _bgSprite;
+    [SerializeField] private Sprite[] _backgrounds;
+    private int _bgIndex;
 
     public float popupAnimationDuration = 0.3f;
+
+    private void Start()
+    {
+        _bgIndex = PlayerPrefs.GetInt("BackgroundIndex", 0);
+        _bgSprite.sprite = _backgrounds[_bgIndex];
+    }
+
+    public void ChangeBg()
+    {
+        _bgIndex++;
+        if (_bgIndex == _backgrounds.Length) _bgIndex = 0;
+        PlayerPrefs.SetInt("BackgroundIndex", _bgIndex);
+        _bgSprite.sprite = _backgrounds[_bgIndex];
+    }
 
     public void ShowLevels()
     {
