@@ -6,8 +6,8 @@ using System.Collections;
 public class CustomSceneFader : MonoBehaviour
 {
     [Header("Fade Settings")]
-    public Image fadeOverlay; // UI Image для затухания
-    public float fadeDuration = 1f; // Длительность затухания
+    public Image fadeOverlay;
+    public float fadeDuration = 1f;
 
     private bool isFading = false;
 
@@ -18,24 +18,17 @@ public class CustomSceneFader : MonoBehaviour
 
         if (fadeOverlay != null)
         {
-            fadeOverlay.raycastTarget = true; // Блокируем нажатия во время анимации
+            fadeOverlay.raycastTarget = true;
             StartCoroutine(FadeIn());
         }
     }
 
-    /// <summary>
-    /// Запускает переход на указанную сцену с эффектом затухания.
-    /// </summary>
-    /// <param name="sceneName">Название сцены для загрузки.</param>
     public void TriggerSceneChange(string sceneName)
     {
-        if (isFading) return; // Избегаем двойного вызова
+        if (isFading) return;
         StartCoroutine(FadeOutAndLoad(sceneName));
     }
 
-    /// <summary>
-    /// Запускает входное затухание (появление сцены).
-    /// </summary>
     IEnumerator FadeIn()
     {
         isFading = true;
@@ -51,20 +44,17 @@ public class CustomSceneFader : MonoBehaviour
             yield return null;
         }
 
-        fadeOverlay.raycastTarget = false; // Разрешаем нажатия после затухания
+        fadeOverlay.raycastTarget = false;
         isFading = false;
     }
 
-    /// <summary>
-    /// Запускает исходящее затухание и загружает новую сцену.
-    /// </summary>
     IEnumerator FadeOutAndLoad(string sceneName)
     {
         isFading = true;
 
         float timer = 0f;
         Color color = fadeOverlay.color;
-        fadeOverlay.raycastTarget = true; // Блокируем нажатия во время затухания
+        fadeOverlay.raycastTarget = true;
 
         while (timer < fadeDuration)
         {
@@ -77,9 +67,6 @@ public class CustomSceneFader : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    /// <summary>
-    /// Универсальный метод для затухания (может использоваться с любым callback).
-    /// </summary>
     public IEnumerator FadeOut(System.Action onFadeComplete)
     {
         isFading = true;
@@ -97,7 +84,7 @@ public class CustomSceneFader : MonoBehaviour
             yield return null;
         }
 
-        onFadeComplete?.Invoke(); // Выполняем обратный вызов
+        onFadeComplete?.Invoke();
         isFading = false;
     }
 }

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlaneController : MonoBehaviour
 {
-    private float forwardSpeed = 1.5f; // Скорость полета вперед
-    private float rotationSpeed = 25f; // Скорость вращения самолета
+    private float forwardSpeed = 1.5f;
+    private float rotationSpeed = 25f;
 
     void Update()
     {
@@ -13,7 +13,6 @@ public class PlaneController : MonoBehaviour
 
     void MoveForward()
     {
-        // Постоянное движение вперед
         transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
     }
 
@@ -25,13 +24,10 @@ public class PlaneController : MonoBehaviour
 
             if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Began)
             {
-                // Получаем позицию касания
                 Vector2 touchDelta = touch.deltaPosition;
 
-                // Преобразуем движение пальца в поворот по оси Y
                 float rotationY = touchDelta.x * rotationSpeed * Time.deltaTime;
 
-                // Поворачиваем самолет
                 transform.Rotate(0, rotationY, 0);
             }
         }

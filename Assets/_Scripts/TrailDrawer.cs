@@ -108,25 +108,22 @@ public class TrailDrawer : MonoBehaviour
 
     void UpdateUI()
     {
-        // Рассчитываем пропорцию для чернил
-        float inkFill = Mathf.Clamp01(currentInk / maxInk); // От 0 до 1
-        float shapeProgress = validator.GetProgress(); // Прогресс закрашивания в процентах
+        float inkFill = Mathf.Clamp01(currentInk / maxInk);
+        float shapeProgress = validator.GetProgress();
 
-        // Обновляем текстовые поля
         if (inkText != null)
         {
-            inkText.text = $"{Mathf.RoundToInt(inkFill * 100)}%"; // Процент оставшихся чернил
+            inkText.text = $"{Mathf.RoundToInt(inkFill * 100)}%";
         }
 
         if (progressText != null)
         {
-            progressText.text = $"{shapeProgress:F1}%"; // Прогресс формы в процентах
+            progressText.text = $"{shapeProgress:F1}%";
         }
 
-        // Если есть бар чернил (Image), обновляем его fillAmount
         if (inkBar != null)
         {
-            inkBar.fillAmount = inkFill; // Заполняем бар чернил
+            inkBar.fillAmount = inkFill;
         }
     }
 }

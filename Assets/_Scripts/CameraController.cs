@@ -5,10 +5,10 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform plane;
     [SerializeField] private GameObject enterPanel;
-    private float cameraMoveDuration = 2f; // Длительность движения камеры в секундах
-    private Vector3 startPosition = new Vector3(0, 1, 0); // Начальная позиция камеры
-    private Vector3 targetPosition = new Vector3(0, 10, 0); // Целевая позиция камеры
-    private PlaneController planeController; // Ссылка на скрипт управления самолетом
+    private float cameraMoveDuration = 2f;
+    private Vector3 startPosition = new Vector3(0, 1, 0);
+    private Vector3 targetPosition = new Vector3(0, 10, 0);
+    private PlaneController planeController;
     [SerializeField] private GameObject[] _gameObjectsToTurnOn;
     [SerializeField] private GameObject _tutorial;
 
@@ -17,7 +17,6 @@ public class CameraController : MonoBehaviour
         transform.position = startPosition;
         planeController = plane.GetComponent<PlaneController>();
 
-        // Убедимся, что самолет не двигается до начала
         if (planeController != null)
         {
             planeController.enabled = false;
@@ -42,13 +41,11 @@ public class CameraController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / cameraMoveDuration);
             elapsedTime += Time.deltaTime;
-            yield return null; // Ждем следующий кадр
+            yield return null;
         }
 
-        // Гарантируем точное положение камеры
         transform.position = targetPosition;
 
-        // Включаем управление самолетом
         if (planeController != null)
         {
             planeController.enabled = true;
